@@ -135,7 +135,7 @@ if __name__ == '__main__':
     for i, frame in enumerate(cam):
         cv2.imshow('Input',frame)
         if (i == 0):
-            writer = VideoWriter(frame.shape,outputFilePath='22.avi')
+            writer = VideoWriter(frame.shape,outputFilePath='webcam.avi')
         writer.Write(frame)
         
         if (i >= numFrames):
