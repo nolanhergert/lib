@@ -1,0 +1,26 @@
+import subprocess
+
+text = 'The quick brown fox jumps over the lazy dog'
+filename = 'test.png'
+
+
+# Create test image using ImageMagick
+arguments = ['convert']
+# Highlighter simulation
+arguments.append('-undercolor pink')
+# Font Size
+arguments.append('-pointsize 26')
+# Alignment
+arguments.append('-gravity center')
+# Text label
+arguments.append('label:"' + text + '"')
+# Add border
+arguments.append('-bordercolor white -border 10')
+# Output file
+arguments.append(filename)
+call = ' '.join(arguments)
+print call
+subprocess.call(call,shell=True)
+
+# Run tesseract
+print subprocess.call('tesseract ' + filename + ' out',shell=True)
