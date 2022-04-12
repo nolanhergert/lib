@@ -20,12 +20,12 @@ class VideoCapture():
         # parameters parameters you can set (like turning auto WB/gain/etc. off)
         self.cam = cv2.VideoCapture(videoSrc)
         if videoHeight != None:
-            self.cam.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, videoHeight)
+            self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, videoHeight)
         if videoWidth == None:
             # For some reason we need to specify this. Assume 4:3 aspect ratio
-            self.cam.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 4*videoHeight/3)
+            self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, 4*videoHeight/3)
         else:
-            self.cam.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, videoWidth)
+            self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, videoWidth)
         
         # Give time for the camera to initialize and get a constant gain/exposure/contrast
         ret, frame = self.cam.read()
@@ -35,18 +35,14 @@ class VideoCapture():
 
     def __iter__(self):
         while True:
-            frame = self.Read()
-            if (frame != None):
-                yield frame
-            else:
-                break
+            yield self.Read()
                 
     def Read(self):
         """
         This is a separate function as we might want to read and not iterate yet
         """
         ret, frame = self.cam.read()
-        if (frame == None and self.firstFrameRead == False):
+        if (ret == False and self.firstFrameRead == False):
             raise Exception('Cannot read from webcam or video file! Check that'
             ' proper (FFMPEG) codecs are installed and webcam is plugged in.')
         self.firstFrameRead = True
@@ -96,7 +92,7 @@ class VideoWriter():
         if (videoCodec == None):
             fourcc = -1
         else:
-            fourcc = cv2.cv.CV_FOURCC(*videoCodec)
+            fourcc = cv2.VideoWriter_fourcc(*videoCodec)
         
         if (videoCodec != 'IYUV' and videoCodec != 'XVID' and outputFilePath[-3:].lower() == 'avi' 
             and not fourcc == -1):
@@ -113,7 +109,7 @@ class VideoWriter():
         self.writer = cv2.VideoWriter(outputFilePath, fourcc, outputFrameRate, \
                                   (width, height), isColor)
         if (self.writer == None):
-                print 'Could not write to output file. Is another process using it?'
+                print('Could not write to output file. Is another process using it?')
         
      
     def Write(self, img):
@@ -128,7 +124,7 @@ if __name__ == '__main__':
     # Limit length of capture to 15 seconds for now
     numSeconds = 15
     
-    cam = VideoCapture(videoSrc=videoSrc,videoHeight=960)#,videoWidth=1280)
+    cam = VideoCapture(videoSrc=videoSrc,videoHeight=240)
     
     outputFrameRate = 30.0 # fps
     numFrames = int(round(numSeconds * outputFrameRate))
