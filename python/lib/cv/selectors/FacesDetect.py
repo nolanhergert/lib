@@ -24,7 +24,7 @@ def FacesDetect(image):
     cascade = cv2.CascadeClassifier(os.path.join(os.path.dirname(__file__),
                                             'haarcascade_frontalface_alt.xml'))
     # gray = cv2.equalizeHist(gray)
-    faces = cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=4, minSize=(30, 30), flags = cv2.cv.CV_HAAR_SCALE_IMAGE)
+    faces = cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=4, minSize=(30, 30), flags = cv2.CASCADE_SCALE_IMAGE)
     if len(faces) > 0:
         # Not sure what this is doing, but the example code has this line
         faces[:,2:] += faces[:,:2]

@@ -89,5 +89,5 @@ def onmouse(event, x, y, flags, param):
 
 if __name__ == '__main__':
     image = np.random.rand(480,640)
-    print MouseSelectRegions(image)
+    print(MouseSelectRegions(image))
     
