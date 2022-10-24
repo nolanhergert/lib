@@ -31,3 +31,13 @@ class MovingAverage(object):
         result = np.divide(self.sum,min(self.count,self.integration_time),dtype=np.float32)
 
         return np.reshape(result,self.shape)
+
+if __name__ == '__main__':
+    import math
+    test = MovingAverage(1,5)
+    testValue = 2**31-1
+    print(testValue)
+    for i in range(10):
+        ret = test.update(testValue)
+        print(ret)
+        assert(math.isclose(ret[0],testValue, abs_tol=1))

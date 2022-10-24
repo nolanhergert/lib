@@ -10,7 +10,7 @@ from python.lib.cv.selectors.MouseSelectRegions import MouseSelectRegions
 from python.lib.cv.trackers.LKHomography import LKHomography
 
 
-def main(videoSource = 0, videoHeight=240, videoWidth=None, ROISize=5, gain=40,
+def main(videoSource = 0, videoHeight=480, videoWidth=None, ROISize=5, gain=40,
           outputFilePath=None):
     """
     This script reads in video frames of a person from a webcam or video and
@@ -139,8 +139,8 @@ def main(videoSource = 0, videoHeight=240, videoWidth=None, ROISize=5, gain=40,
         # So the gain should be on the order of ... 50? Try and center it too by adding 128
         amplifiedROI = ((sumROI - baselineValues) * gain) / (ROISize ** 2) + 128
 
-#         hist = numpy.histogram(amplifiedROI,bins=numpy.arange(-300,301,50))
-#         print hist
+        #hist = numpy.histogram(amplifiedROI,bins=numpy.arange(-300,301,50))
+        #print(hist)
 
         # It's now in units of bits of resu
         amplifiedROI = numpy.uint8(amplifiedROI)
