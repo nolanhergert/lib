@@ -10,7 +10,7 @@ from python.lib.cv.selectors.MouseSelectRegions import MouseSelectRegions
 from python.lib.cv.trackers.LKHomography import LKHomography
 
 
-def main(videoSource = 0, videoHeight=480, videoWidth=None, ROISize=5, gain=40,
+def main(videoSource = 0, videoHeight=480, videoWidth=None, ROISize=15, gain=40,
           outputFilePath=None):
     """
     This script reads in video frames of a person from a webcam or video and
@@ -145,8 +145,15 @@ def main(videoSource = 0, videoHeight=480, videoWidth=None, ROISize=5, gain=40,
         # It's now in units of bits of resu
         amplifiedROI = numpy.uint8(amplifiedROI)
 
+        '''
+
+
+        for i in range(500):
+            amplifiedROI[i] = i
+        '''
+
         result = cv2.resize(amplifiedROI, (regionWidth,regionHeight))
-        cv2.imshow('Result', result)
+        cv2.imshow('Result', result[:,:,1])
 
         # Plot the amplified mean value of the entire face over time
         plot.update(numpy.mean(numpy.mean(amplifiedROI, axis = 0), axis = 0))
