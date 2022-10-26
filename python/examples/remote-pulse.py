@@ -145,13 +145,6 @@ def main(videoSource = 0, videoHeight=480, videoWidth=None, ROISize=15, gain=40,
         # It's now in units of bits of resu
         amplifiedROI = numpy.uint8(amplifiedROI)
 
-        '''
-
-
-        for i in range(500):
-            amplifiedROI[i] = i
-        '''
-
         result = cv2.resize(amplifiedROI, (regionWidth,regionHeight))
         cv2.imshow('Result', result[:,:,1])
 

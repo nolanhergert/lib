@@ -41,6 +41,7 @@ class LKHomography():
     def __init__(self,image, rect=None):
         self.rect = rect
         self.pointsOrig = GoodPointsToTrack(image,rect)
+        # The new locations of pointsOrig
         self.points = self.pointsOrig
         self.grayPrev = None
     def Track(self, image):
@@ -57,24 +58,26 @@ class LKHomography():
         H : cv2 matrix?
             Homography matrix
         """
-        if len(image.shape) > 2:
+        if image is not None and len(image.shape) > 2:
             self.gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         else:
             self.gray = image
 
-        if self.grayPrev is not None:
-            # Given the previous image and the next image, determine whether
-            # all of self.points are still there in the current image.
-            # status is True/False for every point in pts
-            pts, status = self.FindPointsAndReject(self.grayPrev, self.gray, self.points)
-            #If we lost any points due to bad tracking, get rid of them
-            self.points     = pts[status].copy()
-            self.pointsOrig = self.pointsOrig[status].copy()
+        if self.grayPrev is None:
+            self.grayPrev = self.gray
+
+        # Given the previous image and the next image, determine whether
+        # all of self.points are still there in the current image.
+        # status is True/False for every point in pts
+        self.points, self.status = self.FindPointsAndReject(self.grayPrev, self.gray, self.points)
+        #If we lost any points due to bad tracking, get rid of them
+        self.points     = self.points[self.status].copy()
+        self.pointsOrig = self.pointsOrig[self.status].copy()
 
         # If we have a significant number of points left
-        if (len(self.pointsOrig) > self.minPoints):
+        if (len(self.status == True) > self.minPoints):
             #Find the linear mapping/warping from points back to pointsOrig
-            H, self.status = cv2.findHomography(self.pointsOrig, self.points, (0,cv2.RANSAC)[use_ransac], 10.0)
+            H, self.status2  = cv2.findHomography(self.pointsOrig, self.points, (0,cv2.RANSAC)[use_ransac], 10.0)
         else:
             raise Exception('Lost tracker points, re-initialize')
 
@@ -116,14 +119,16 @@ class LKHomography():
     def TrackWarpCrop(self, image):
         H = self.Track(image)
         output = self.Warp(image,H)
-        cropped = self.Crop(output,self.rect)
+        cropped = self.Crop(output,self.rect).copy()
 
         # Plot the points <on the final image>...can be helpful.
         #output = output
         for (x0, y0), (x1, y1), good in zip(self.pointsOrig[:], self.points[:], self.status[:]):
             if good:
                 cv2.line(output, (int(x0), int(y0)), (int(x1), int(y1)), (0, 128, 0))
-            cv2.circle(output, (int(x1), int(y1)), 2, (red, green)[good[0]], -1)
+                cv2.circle(output, (int(x1), int(y1)), 2, green, -1)
+            else:
+                cv2.circle(output, (int(x1), int(y1)), 2, red, -1)
 
         cv2.imshow('LKHomography', output)
 
