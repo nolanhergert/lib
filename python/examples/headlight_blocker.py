@@ -32,6 +32,8 @@ def main(videoSource = 0, videoHeight=480, videoWidth=None):
 
     """
     useFaceDetection = True
+    # Define the kernel for opening operation
+    kernel = numpy.ones((5, 5), numpy.uint8)
 
     if (type(videoSource) is int):
         videoCap = VideoCapture(videoSource,videoWidth = videoWidth,
@@ -122,8 +124,16 @@ def main(videoSource = 0, videoHeight=480, videoWidth=None):
         # Avoiding wraparound
         diff = numpy.int16(face) - numpy.int16(faceOrig)
         diff = numpy.uint8(abs(diff))
+        #aboveThreshold = diff > 20
+        #diff = diff > 20 ? 255 : 0
+        # Do threshold operation
+        ret, thresh = cv2.threshold(diff,20,255,cv2.THRESH_BINARY)
 
-        cv2.imshow('Diff', diff)
+        opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN,
+                           kernel, iterations=1)
+
+
+        cv2.imshow('Diff', opening)
 
     cv2.destroyAllWindows()
     videoCap.Release()
@@ -131,7 +141,7 @@ def main(videoSource = 0, videoHeight=480, videoWidth=None):
 
 if __name__ == '__main__':
     import sys
-    print('Remote Pulse Script Usage:\npython main.py <input file (0,face.mp4)> <output file (pulse.avi)>')
+    #print('Remote Pulse Script Usage:\npython main.py <input file (0,face.mp4)> <output file (pulse.avi)>')
     if len(sys.argv) > 1:
         videoSource= sys.argv[1]
     else:
