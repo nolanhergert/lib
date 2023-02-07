@@ -148,6 +148,7 @@ def ProcessColorFrame(frame):
 def Testing():
   # Useful ground truth illumination for different faces: http://www.zvork.fr/vls/
   # bad side lighting (inconsistent threshold), black, white, tan, motion, ground truth
+  # Add additional noise using numpy/scikit
   ProcessColorFrame()
 
 
